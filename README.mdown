@@ -1,0 +1,19 @@
+# HTML2Textile #
+
+A quick and simple way to convert HTML to Textile.
+
+`parser = HTMLToTextileParser.new
+parser.feed(your_html)
+puts parser.to_textile`
+
+## Introduction From 2007 ##
+
+One of the many tricky decisions to be made when building content management tools is how to allow users to control the basic formatting of their input without breaking your carefully crafted layouts or injecting nasty hacks into your pages. One approach has long been to provide your own markup language. Instead of allowing users to write HTML, let them use bbcode, or markdown, or textile, which have more controlled vocabularies and rules that mean it’s much less likely that problems will occur.
+
+Textile in particular has a nice simple syntax and is increasingly popular thanks to its adoption in products like those of 37signals. In Ruby, there’s the RedCloth library which makes it fast and easy to convert textile to HTML. The one problem is if you already have a body of user generated HTML in your legacy system that needs converting. That’s the situation I found myself in this week and I quickly needed a tool to translate the content so that I could get on with the more interesting parts of the system.
+
+Searching for options, the ClothRed library which offers some translation, but it doesn’t handle important elements like links. I considered patching it to handle the elements I need, but in the end I decided to take a different approach and used the SGML parsing library found here to port a python html2textile parser.
+
+Porting code from python to ruby is a pretty straightforward process as the language’s are so similar on a number of levels, but there were several issues to work through, particularly relating to scoping, and quite a few methods to change to make them feel a little more ruby-ish. I’ve not converted all of the entity handling as I didn’t really need it, but there might be a bit of work to do in making sure character set issues are properly taken care of.
+
+The end result is a piece of code that’s now served its purpose and that I’m unlikely to need again for quite a while. It’s not something that I’m particularly proud of, it could almost certainly be implemented more neatly, but I thought I’d throw it out there in case it could be useful to someone else. Should you be inspired to take it and twist it and turn it into a well-heeled, more robust and properly distributable solution, feel free, but please let me know so that at the very least I can update this entry.
