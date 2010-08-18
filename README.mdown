@@ -2,9 +2,9 @@
 
 A quick and simple way to convert HTML to Textile.
 
-`parser = HTMLToTextileParser.new
-parser.feed(your_html)
-puts parser.to_textile`
+    parser = HTMLToTextileParser.new
+    parser.feed(your_html)
+    puts parser.to_textile
 
 ## Introduction From 2007 ##
 
