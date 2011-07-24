@@ -17,6 +17,11 @@ require 'sgml_parser'
 #   parser.feed(input_html)
 #   puts parser.to_textile
 class HTMLToTextileParser < SgmlParser
+
+  PAIRS = { 'blockquote' => 'bq', 'p' => 'p' }
+  QUICKTAGS = { 'b' => '*', 'strong' => '*', 
+    'i' => '_', 'em' => '_', 'cite' => '??', 's' => '-', 
+    'sup' => '^', 'sub' => '~', 'code' => '@', 'span' => '%'}
   
   attr_accessor :result
   attr_accessor :in_block
@@ -77,11 +82,17 @@ class HTMLToTextileParser < SgmlParser
   end
   
   def write(d)
+    if d.respond_to? :lines
+	   d_a = d.lines.to_a
+	 else
+	   d_a = d.to_a
+	 end
     if self.data_stack.size < 2
-      self.result += d.to_a
+      self.result += d_a
     else
-      self.data_stack[-1] += d.to_a
+      self.data_stack[-1] += d_a
     end
+
   end
           
   def start_capture(tag)
@@ -108,10 +119,6 @@ class HTMLToTextileParser < SgmlParser
     end
   end
 
-  PAIRS = { 'blockquote' => 'bq', 'p' => 'p' }
-  QUICKTAGS = { 'b' => '*', 'strong' => '*', 
-    'i' => '_', 'em' => '_', 'cite' => '??', 's' => '-', 
-    'sup' => '^', 'sub' => '~', 'code' => '@', 'span' => '%'}
   
   PAIRS.each do |key, value|
     define_method "start_#{key}" do |attributes|
@@ -170,14 +177,14 @@ class HTMLToTextileParser < SgmlParser
     attrs = attrs_to_hash(attrs)
     self.a_href = attrs['href']
 
-    if self.a_href:
+    if self.a_href
       write(" \"")
       start_capture("a")
     end
   end
 
   def end_a
-    if self.a_href:
+    if self.a_href
       stop_capture_and_write
       write(["\":", self.a_href, " "])
       self.a_href = false
